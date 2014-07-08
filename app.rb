@@ -23,5 +23,6 @@ before do
 end
 
 get '/' do
+  @pages = Page.all
   rabl :index, format: 'json'
 end
