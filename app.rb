@@ -22,7 +22,42 @@ before do
   content_type 'application/json'
 end
 
-get '/' do
-  @pages = Page.all
-  rabl :index, format: 'json'
+%w(newspaper test).map do |route|
+  before "/#{route}/*" do
+  end
+end
+
+get '/newspapers' do
+  @newspapers = Newspaper.all
+  rabl :'newspapers/index', format: 'json'
+end
+
+get '/newspapers/:id' do
+  @newspaper = Newspaper.find params[:id]
+  rabl :'newspapers/show', format: 'json'
+end
+
+post '/newspapers' do
+  @newspaper = Newspaper.new params
+
+  if @newspaper.save
+    redirect to("/newspapers/#{@newspaper.id}")
+  else
+    { callback: @newspaper.errors.full_messages }.to_json
+  end
+end
+
+put '/newspapers/:id' do
+  @newspaper = Newspaper.find params[:id]
+
+  if @newspaper.update params
+    redirect "/newspapers/#{@newspaper.id}"
+  else
+    { callback: @newspaper.errors.full_messages }.to_json
+  end
+end
+
+delete '/newspapers/:id' do
+  Newspaper.find(params[:id]).destroy
+  redirect to('/newspapers')
 end
