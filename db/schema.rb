@@ -11,11 +11,55 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140708110901) do
+ActiveRecord::Schema.define(version: 20140708150608) do
+
+  create_table "newspapers", force: true do |t|
+    t.string   "image"
+    t.string   "link"
+    t.string   "newspaper_name"
+    t.string   "title"
+    t.text     "content"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "organizations", force: true do |t|
+    t.integer  "nb_employees"
+    t.string   "address"
+    t.string   "ceo_name"
+    t.string   "city"
+    t.string   "email"
+    t.string   "image"
+    t.string   "lat"
+    t.string   "link"
+    t.string   "lon"
+    t.string   "name"
+    t.string   "phone"
+    t.string   "type"
+    t.text     "ceo_bio"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "pages", force: true do |t|
-    t.string   "content"
     t.string   "title"
+    t.text     "content"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "partners", force: true do |t|
+    t.string   "image"
+    t.string   "link"
+    t.string   "name"
+    t.text     "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "works", force: true do |t|
+    t.string   "title"
+    t.text     "content"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

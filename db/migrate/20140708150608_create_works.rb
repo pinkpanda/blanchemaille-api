@@ -1,6 +1,6 @@
-class CreatePages < ActiveRecord::Migration
+class CreateWorks < ActiveRecord::Migration
   def change
-    create_table :pages do |t|
+    create_table :works do |t|
       t.string :title
       t.text :content
 
