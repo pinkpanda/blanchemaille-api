@@ -1,4 +1,4 @@
-require 'sinatra'
+require 'rubygems'
 require './app.rb'
 
-run API
+run Sinatra::Application
