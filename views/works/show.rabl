@@ -1,2 +1,2 @@
 object @work
-attributes *@work.class.try(:column_names)
+attributes *@work.class.column_names

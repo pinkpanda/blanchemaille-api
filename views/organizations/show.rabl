@@ -1,2 +1,2 @@
 object @organization
-attributes *@organization.class.try(:column_names)
+attributes *@organization.class.column_names

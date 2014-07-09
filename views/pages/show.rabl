@@ -1,2 +1,2 @@
 object @page
-attributes *@page.class.try(:column_names)
+attributes *@page.class.column_names

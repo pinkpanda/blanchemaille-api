@@ -4,6 +4,7 @@ require 'sinatra/reloader'
 require 'sinatra/activerecord'
 require 'rabl'
 
+require './helpers.rb'
 require './models.rb'
 
 
@@ -25,6 +26,7 @@ end
 %w(newspaper organization page partner work).map do |model|
   before "/#{model}s/:id" do
     instance_variable_set(:"@#{model}", model.classify.constantize.find_by_id(params[:id]))
+    error 404 unless instance_variable_get(:"@#{model}")
   end
 end
 
@@ -41,7 +43,7 @@ get '/newspapers/:id' do
 end
 
 post '/newspapers' do
-  @newspaper = Newspaper.new params
+  @newspaper = Newspaper.new permit(request.params, Newspaper)
 
   if @newspaper.save
     rabl :'newspapers/show', format: 'json'
@@ -51,7 +53,7 @@ post '/newspapers' do
 end
 
 put '/newspapers/:id' do
-  if @newspaper.update request.params
+  if @newspaper.update permit(request.params, Newspaper)
     rabl :'newspapers/show', format: 'json'
   else
     { messages: @newspaper.errors.full_messages }.to_json
@@ -75,7 +77,7 @@ get '/organizations/:id' do
 end
 
 post '/organizations' do
-  @organization = Organization.new params
+  @organization = Organization.new permit(request.params, Organization)
 
   if @organization.save
     rabl :'organizations/show', format: 'json'
@@ -85,7 +87,7 @@ post '/organizations' do
 end
 
 put '/organizations/:id' do
-  if @organization.update request.params
+  if @organization.update permit(request.params, Organization)
     rabl :'organizations/show', format: 'json'
   else
     { messages: @organization.errors.full_messages }.to_json
@@ -109,7 +111,7 @@ get '/pages/:id' do
 end
 
 post '/pages' do
-  @page = Page.new params
+  @page = Page.new permit(request.params, Page)
 
   if @page.save
     rabl :'pages/show', format: 'json'
@@ -119,7 +121,7 @@ post '/pages' do
 end
 
 put '/pages/:id' do
-  if @page.update request.params
+  if @page.update permit(request.params, Page)
     rabl :'pages/show', format: 'json'
   else
     { messages: @page.errors.full_messages }.to_json
@@ -143,7 +145,7 @@ get '/partners/:id' do
 end
 
 post '/partners' do
-  @partner = Partner.new params
+  @partner = Partner.new permit(request.params, Partner)
 
   if @partner.save
     rabl :'partners/show', format: 'json'
@@ -153,7 +155,7 @@ post '/partners' do
 end
 
 put '/partners/:id' do
-  if @partner.update request.params
+  if @partner.update permit(request.params, Partner)
     rabl :'partners/show', format: 'json'
   else
     { messages: @partner.errors.full_messages }.to_json
@@ -177,7 +179,7 @@ get '/works/:id' do
 end
 
 post '/works' do
-  @work = Work.new params
+  @work = Work.new permit(request.params, Work)
 
   if @work.save
     rabl :'works/show', format: 'json'
@@ -187,7 +189,7 @@ post '/works' do
 end
 
 put '/works/:id' do
-  if @work.update request.params
+  if @work.update permit(request.params, Work)
     rabl :'works/show', format: 'json'
   else
     { messages: @work.errors.full_messages }.to_json

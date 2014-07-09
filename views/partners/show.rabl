@@ -1,2 +1,2 @@
 object @partner
-attributes *@partner.class.try(:column_names)
+attributes *@partner.class.column_names
