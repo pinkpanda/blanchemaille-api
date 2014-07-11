@@ -2,6 +2,7 @@ require 'bundler/setup'
 require 'sinatra'
 require 'sinatra/reloader'
 require 'sinatra/activerecord'
+require 'sinatra/croon'
 require 'rabl'
 
 require './helpers.rb'
@@ -14,7 +15,7 @@ Rabl.configure do |config|
 end
 
 
-before do
+before /^(?!\/docs)/ do
   content_type 'application/json'
 end
 
@@ -25,172 +26,225 @@ end
   end
 end
 
+# Show docs.
+get '/' do
+  redirect '/docs'
+end
 
-# Newspapers
-
+# Get all newspapers.
 get '/newspapers' do
   @newspapers = Newspaper.all
   rabl :'newspapers/index', format: 'json'
 end
 
+# Get a newspaper.
+#
+# @param <id> the id of the newspaper you search for
 get '/newspapers/:id' do
   rabl :'newspapers/show', format: 'json'
 end
 
+# Add a newspaper.
 post '/newspapers' do
   @newspaper = Newspaper.new permit(request.params, Newspaper)
 
   if @newspaper.save
     rabl :'newspapers/show', format: 'json'
   else
-    { messages: @newspaper.errors.full_messages }.to_json
+    { message: @newspaper.errors.full_messages }.to_json
   end
 end
 
+# Update a newspaper.
+#
+# @param <id> the id of the newspaper to update
 put '/newspapers/:id' do
   if @newspaper.update permit(request.params, Newspaper)
     rabl :'newspapers/show', format: 'json'
   else
-    { messages: @newspaper.errors.full_messages }.to_json
+    { message: @newspaper.errors.full_messages }.to_json
   end
 end
 
+# Delete a newspaper.
+#
+# @param <id> the id of the newspaper to delete
 delete '/newspapers/:id' do
   @newspaper.destroy
 end
 
 
-# Organizations
-
+# Get all organizations.
 get '/organizations' do
   @organizations = Organization.all
   rabl :'organizations/index', format: 'json'
 end
 
+# Get an organization.
+#
+# @param <id> the id of the organization you search for
 get '/organizations/:id' do
   rabl :'organizations/show', format: 'json'
 end
 
+# Add an organization.
 post '/organizations' do
   @organization = Organization.new permit(request.params, Organization)
 
   if @organization.save
     rabl :'organizations/show', format: 'json'
   else
-    { messages: @organization.errors.full_messages }.to_json
+    { message: @organization.errors.full_messages }.to_json
   end
 end
 
+# Update an organization.
+#
+# @param <id> the id of the organization to update
 put '/organizations/:id' do
   if @organization.update permit(request.params, Organization)
     rabl :'organizations/show', format: 'json'
   else
-    { messages: @organization.errors.full_messages }.to_json
+    { message: @organization.errors.full_messages }.to_json
   end
 end
 
+# Delete an organization.
+#
+# @param <id> the id of the organization to delete
 delete '/organizations/:id' do
   @organization.destroy
 end
 
 
-# Pages
-
+# Get all pages.
 get '/pages' do
   @pages = Page.all
   rabl :'pages/index', format: 'json'
 end
 
+# Get a page.
+#
+# @param <id> the id of the page you search for
 get '/pages/:id' do
   rabl :'pages/show', format: 'json'
 end
 
+# Add a page.
 post '/pages' do
   @page = Page.new permit(request.params, Page)
 
   if @page.save
     rabl :'pages/show', format: 'json'
   else
-    { messages: @page.errors.full_messages }.to_json
+    { message: @page.errors.full_messages }.to_json
   end
 end
 
+# Update a page.
+#
+# @param <id> the id of the page to update
 put '/pages/:id' do
   if @page.update permit(request.params, Page)
     rabl :'pages/show', format: 'json'
   else
-    { messages: @page.errors.full_messages }.to_json
+    { message: @page.errors.full_messages }.to_json
   end
 end
 
+# Delete a page.
+#
+# @param <id> the id of the page to delete
 delete '/pages/:id' do
   @page.destroy
 end
 
 
-# Partners
-
+# Get all partners.
 get '/partners' do
   @partners = Partner.all
   rabl :'partners/index', format: 'json'
 end
 
+# Get a partner.
+#
+# @param <id> the id of the partner you search for
 get '/partners/:id' do
   rabl :'partners/show', format: 'json'
 end
 
+# Add a partner.
 post '/partners' do
   @partner = Partner.new permit(request.params, Partner)
 
   if @partner.save
     rabl :'partners/show', format: 'json'
   else
-    { messages: @partner.errors.full_messages }.to_json
+    { message: @partner.errors.full_messages }.to_json
   end
 end
 
+# Update a partner.
+#
+# @param <id> the id of the partner to update
 put '/partners/:id' do
   if @partner.update permit(request.params, Partner)
     rabl :'partners/show', format: 'json'
   else
-    { messages: @partner.errors.full_messages }.to_json
+    { message: @partner.errors.full_messages }.to_json
   end
 end
 
+# Delete a partner.
+#
+# @param <id> the id of the partner to delete
 delete '/partners/:id' do
   @partner.destroy
 end
 
 
-# Works
-
+# Get all works.
 get '/works' do
   @works = Work.all
   rabl :'works/index', format: 'json'
 end
 
+# Get a work.
+#
+# @param <id> the id of the work you search for
 get '/works/:id' do
   rabl :'works/show', format: 'json'
 end
 
+# Add a work.
 post '/works' do
   @work = Work.new permit(request.params, Work)
 
   if @work.save
     rabl :'works/show', format: 'json'
   else
-    { messages: @work.errors.full_messages }.to_json
+    { message: @work.errors.full_messages }.to_json
   end
 end
 
+# Update a work.
+#
+# @param <id> the id of the work to update
 put '/works/:id' do
   if @work.update permit(request.params, Work)
     rabl :'works/show', format: 'json'
   else
-    { messages: @work.errors.full_messages }.to_json
+    { message: @work.errors.full_messages }.to_json
   end
 end
 
+# Delete a work.
+#
+# @param <id> the id of the work to delete
 delete '/works/:id' do
   @work.destroy
+end
+
+not_found do
+  { message: 'Not found' }.to_json
 end

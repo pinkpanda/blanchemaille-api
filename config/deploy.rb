@@ -9,6 +9,5 @@ set :deploy_to,     "/home/#{fetch(:user)}/apps/#{fetch(:application)}_#{fetch(:
 
 set :linked_files,  %w{config/database.yml}
 
-set :rack_env,      fetch(:stage)
 set :keep_releases, 3
 set :pty,           true
