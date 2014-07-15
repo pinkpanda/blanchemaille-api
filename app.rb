@@ -6,6 +6,7 @@ require 'sinatra/croon'
 require 'multi_json'
 require 'rabl'
 
+require './modules.rb'
 require './helpers.rb'
 require './models.rb'
 

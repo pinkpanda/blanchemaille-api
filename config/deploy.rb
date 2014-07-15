@@ -8,6 +8,7 @@ ask :branch,        proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
 set :deploy_to,     "/home/#{fetch(:user)}/apps/#{fetch(:application)}_#{fetch(:stage)}"
 
 set :linked_files,  %w{config/database.yml}
+set :linked_dirs,   %w{public/uploads}
 
 set :keep_releases, 3
 set :pty,           true
