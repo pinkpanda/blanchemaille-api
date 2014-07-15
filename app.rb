@@ -3,6 +3,7 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'sinatra/activerecord'
 require 'sinatra/croon'
+require 'multi_json'
 require 'rabl'
 
 require './helpers.rb'
@@ -17,6 +18,7 @@ end
 
 before /^(?!\/docs)/ do
   content_type 'application/json'
+  request.params.merge! json_body_params
 end
 
 %w(newspaper organization page partner work).map do |model|
