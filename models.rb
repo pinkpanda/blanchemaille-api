@@ -1,4 +1,8 @@
+require 'carrierwave/orm/activerecord'
+
 class Newspaper < ActiveRecord::Base
+  mount_uploader :image, ImageUploader
+
   validates :newspaper_name,
             presence: true
 
