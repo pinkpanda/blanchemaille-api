@@ -53,6 +53,7 @@ post '/newspapers' do
   if @newspaper.save
     rabl :'newspapers/show', format: 'json'
   else
+    status 400
     { message: @newspaper.errors.full_messages }.to_json
   end
 end
@@ -64,6 +65,7 @@ put '/newspapers/:id' do
   if @newspaper.update permit(request.params, Newspaper)
     rabl :'newspapers/show', format: 'json'
   else
+    status 400
     { message: @newspaper.errors.full_messages }.to_json
   end
 end
@@ -96,6 +98,7 @@ post '/organizations' do
   if @organization.save
     rabl :'organizations/show', format: 'json'
   else
+    status 400
     { message: @organization.errors.full_messages }.to_json
   end
 end
@@ -107,6 +110,7 @@ put '/organizations/:id' do
   if @organization.update permit(request.params, Organization)
     rabl :'organizations/show', format: 'json'
   else
+    status 400
     { message: @organization.errors.full_messages }.to_json
   end
 end
@@ -139,6 +143,7 @@ post '/pages' do
   if @page.save
     rabl :'pages/show', format: 'json'
   else
+    status 400
     { message: @page.errors.full_messages }.to_json
   end
 end
@@ -150,6 +155,7 @@ put '/pages/:id' do
   if @page.update permit(request.params, Page)
     rabl :'pages/show', format: 'json'
   else
+    status 400
     { message: @page.errors.full_messages }.to_json
   end
 end
@@ -182,6 +188,7 @@ post '/partners' do
   if @partner.save
     rabl :'partners/show', format: 'json'
   else
+    status 400
     { message: @partner.errors.full_messages }.to_json
   end
 end
@@ -193,6 +200,7 @@ put '/partners/:id' do
   if @partner.update permit(request.params, Partner)
     rabl :'partners/show', format: 'json'
   else
+    status 400
     { message: @partner.errors.full_messages }.to_json
   end
 end
@@ -225,6 +233,7 @@ post '/works' do
   if @work.save
     rabl :'works/show', format: 'json'
   else
+    status 400
     { message: @work.errors.full_messages }.to_json
   end
 end
@@ -236,6 +245,7 @@ put '/works/:id' do
   if @work.update permit(request.params, Work)
     rabl :'works/show', format: 'json'
   else
+    status 400
     { message: @work.errors.full_messages }.to_json
   end
 end
@@ -248,5 +258,6 @@ delete '/works/:id' do
 end
 
 not_found do
+  status 404
   { message: 'Not found' }.to_json
 end
