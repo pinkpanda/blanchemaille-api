@@ -8,6 +8,6 @@ helpers do
   end
 
   def permit(params, model)
-    params.extract!(*model.column_names.map(&:to_sym))
+    params.with_indifferent_access.extract!(*model.column_names.map(&:to_sym))
   end
 end
