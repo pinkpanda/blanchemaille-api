@@ -18,7 +18,7 @@ end
 
 
 before /^(?!\/docs)/ do
-  content_type 'application/json'
+  content_type :json
   request.params.merge! json_body_params
 end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140708150608) do
+ActiveRecord::Schema.define(version: 20140718093929) do
 
   create_table "newspapers", force: true do |t|
     t.string   "image"
@@ -35,7 +35,7 @@ ActiveRecord::Schema.define(version: 20140708150608) do
     t.string   "lon"
     t.string   "name"
     t.string   "phone"
-    t.string   "type"
+    t.string   "sector"
     t.text     "ceo_bio"
     t.datetime "created_at"
     t.datetime "updated_at"

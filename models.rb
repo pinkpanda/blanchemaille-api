@@ -14,7 +14,7 @@ class Organization < ActiveRecord::Base
   validates :name,
             presence: true
 
-  validates :type,
+  validates :sector,
             presence: true
 end
 
