@@ -25,6 +25,8 @@ end
 %w(newspaper organization page partner work).map do |model|
   before "/#{model}s/:id" do
     instance_variable_set(:"@#{model}", model.classify.constantize.find_by_id(params[:id]))
+    @page = Page.find_by_slug(params[:id]) if !instance_variable_get(:"@#{model}") && model === 'page'
+
     error 404 unless instance_variable_get(:"@#{model}")
   end
 end
@@ -132,7 +134,7 @@ end
 
 # Get a page.
 #
-# @param <id> the id of the page you search for
+# @param <id> the id or slug of the page you search for
 get '/pages/:id' do
   rabl :'pages/show', format: 'json'
 end
@@ -259,6 +261,5 @@ delete '/works/:id' do
 end
 
 not_found do
-  status 404
   { message: 'Not found' }.to_json
 end

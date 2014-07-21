@@ -18,6 +18,9 @@ class Organization < ActiveRecord::Base
 end
 
 class Page < ActiveRecord::Base
+  validates :slug,
+          presence: true
+
   validates :title,
             presence: true
 end
