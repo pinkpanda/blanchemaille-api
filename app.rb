@@ -3,6 +3,7 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'sinatra/activerecord'
 require 'sinatra/croon'
+require 'pony'
 require 'multi_json'
 require 'rabl'
 
@@ -34,6 +35,14 @@ end
 # Show docs.
 get '/' do
   redirect '/docs'
+end
+
+# Send an email.
+post '/contact' do
+  Pony.mail to: request.params[:to],
+            from: request.params[:from],
+            subject: request.params[:subject],
+            body: request.params[:body]
 end
 
 # Get all newspapers.

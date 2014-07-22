@@ -8,6 +8,7 @@ gem 'capistrano-nginx-unicorn', '~> 0.1', group: :development
 gem 'capistrano-rvm',           '~> 0.1'
 gem 'carrierwave',              '0.10.0'
 gem 'mysql2',                   '0.3.16'
+gem 'pony',                     '1.10'
 gem 'rabl',                     '0.10.1'
 gem 'rmagick',                  '2.13.2'
 gem 'sinatra-activerecord',     '2.0.2'
