@@ -7,6 +7,7 @@ gem 'capistrano-bundler',       '~> 1.1'
 gem 'capistrano-nginx-unicorn', '~> 0.1', group: :development
 gem 'capistrano-rvm',           '~> 0.1'
 gem 'carrierwave',              '0.10.0'
+gem 'friendly_id',              '5.0.4'
 gem 'mysql2',                   '0.3.16'
 gem 'pony',                     '1.10'
 gem 'rabl',                     '0.10.1'

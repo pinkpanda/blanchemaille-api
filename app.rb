@@ -3,6 +3,7 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'sinatra/activerecord'
 require 'sinatra/croon'
+require 'friendly_id'
 require 'pony'
 require 'multi_json'
 require 'rabl'
@@ -25,8 +26,15 @@ end
 
 %w(newspaper organization page partner work).map do |model|
   before "/#{model}s/:id" do
-    instance_variable_set(:"@#{model}", model.classify.constantize.find_by_id(params[:id]))
-    @page = Page.find_by_slug(params[:id]) if !instance_variable_get(:"@#{model}") && model === 'page'
+    if model == 'page'
+      instance_variable_set(:"@#{model}", model.classify.constantize.find_by_id(params[:id]))
+      @page = Page.find_by_slug(params[:id]) if !instance_variable_get(:"@#{model}")
+    else
+      begin
+        instance_variable_set(:"@#{model}", model.classify.constantize.friendly.find(params[:id]))
+      rescue ActiveRecord::RecordNotFound => e
+      end
+    end
 
     error 404 unless instance_variable_get(:"@#{model}")
   end

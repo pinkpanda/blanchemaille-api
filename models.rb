@@ -1,6 +1,10 @@
 require 'carrierwave/orm/activerecord'
 
 class Newspaper < ActiveRecord::Base
+  extend FriendlyId
+
+  friendly_id :title, use: :slugged
+
   mount_uploader :image, ImageUploader
 
   validates :newspaper_name,
@@ -11,6 +15,10 @@ class Newspaper < ActiveRecord::Base
 end
 
 class Organization < ActiveRecord::Base
+  extend FriendlyId
+
+  friendly_id :name, use: :slugged
+
   mount_uploader :image, ImageUploader
 
   validates :name,
@@ -26,6 +34,10 @@ class Page < ActiveRecord::Base
 end
 
 class Partner < ActiveRecord::Base
+  extend FriendlyId
+
+  friendly_id :name, use: :slugged
+
   mount_uploader :image, ImageUploader
 
   validates :name,
@@ -33,6 +45,10 @@ class Partner < ActiveRecord::Base
 end
 
 class Work < ActiveRecord::Base
+  extend FriendlyId
+
+  friendly_id :title, use: :slugged
+
   validates :title,
             presence: true
 end
