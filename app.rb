@@ -233,6 +233,13 @@ delete '/partners/:id' do
 end
 
 
+# Get all sectors.
+get '/sectors' do
+  @sectors = Organization.all.map(&:sector)
+  @sectors.uniq.to_json
+end
+
+
 # Get all works.
 get '/works' do
   @works = Work.all
