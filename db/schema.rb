@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140731132124) do
+ActiveRecord::Schema.define(version: 20140801085356) do
 
   create_table "newspapers", force: true do |t|
     t.string   "image"
@@ -68,6 +68,16 @@ ActiveRecord::Schema.define(version: 20140731132124) do
   end
 
   add_index "partners", ["slug"], name: "index_partners_on_slug", unique: true, using: :btree
+
+  create_table "users", force: true do |t|
+    t.string   "authentication_token"
+    t.string   "email"
+    t.string   "firstname"
+    t.string   "lastname"
+    t.string   "password"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "works", force: true do |t|
     t.string   "title"
