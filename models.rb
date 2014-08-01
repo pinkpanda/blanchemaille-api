@@ -44,6 +44,30 @@ class Partner < ActiveRecord::Base
             presence: true
 end
 
+class User < ActiveRecord::Base
+  validates :email,
+            presence: true,
+            uniqueness: true
+
+  validates :firstname,
+            presence: true
+
+  validates :lastname,
+            presence: true
+
+  validates :password,
+            presence: true
+
+  before_create :set_token
+
+  def set_token
+    self.authentication_token = SecureRandom.urlsafe_base64
+    until User.find_by(authentication_token: self.authentication_token).nil?
+      self.authentication_token = SecureRandom.urlsafe_base64
+    end
+  end
+end
+
 class Work < ActiveRecord::Base
   extend FriendlyId
 

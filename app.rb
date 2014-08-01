@@ -7,6 +7,8 @@ require 'friendly_id'
 require 'pony'
 require 'multi_json'
 require 'rabl'
+require 'securerandom'
+require 'digest/md5'
 
 require './modules.rb'
 require './helpers.rb'
@@ -22,6 +24,12 @@ end
 before /^(?!\/docs)/ do
   content_type :json
   request.params.merge! json_body_params
+end
+
+set(:check) do |name|
+  condition do
+    error 401 unless send(name)
+  end
 end
 
 %w(newspaper organization page partner work).map do |model|
@@ -46,7 +54,7 @@ get '/' do
 end
 
 # Send an email.
-post '/contact' do
+post '/contact', check: :valid_token? do
   Pony.mail to: request.params[:to],
             from: request.params[:from],
             subject: request.params[:subject],
@@ -67,7 +75,7 @@ get '/newspapers/:id' do
 end
 
 # Add a newspaper.
-post '/newspapers' do
+post '/newspapers', check: :valid_token? do
   @newspaper = Newspaper.new permit(request.params, Newspaper)
 
   if @newspaper.save
@@ -81,7 +89,7 @@ end
 # Update a newspaper.
 #
 # @param <id> the id of the newspaper to update
-put '/newspapers/:id' do
+put '/newspapers/:id', check: :valid_token? do
   if @newspaper.update permit(request.params, Newspaper)
     rabl :'newspapers/show', format: 'json'
   else
@@ -93,7 +101,7 @@ end
 # Delete a newspaper.
 #
 # @param <id> the id of the newspaper to delete
-delete '/newspapers/:id' do
+delete '/newspapers/:id', check: :valid_token? do
   @newspaper.destroy
 end
 
@@ -112,7 +120,7 @@ get '/organizations/:id' do
 end
 
 # Add an organization.
-post '/organizations' do
+post '/organizations', check: :valid_token? do
   @organization = Organization.new permit(request.params, Organization)
 
   if @organization.save
@@ -126,7 +134,7 @@ end
 # Update an organization.
 #
 # @param <id> the id of the organization to update
-put '/organizations/:id' do
+put '/organizations/:id', check: :valid_token? do
   if @organization.update permit(request.params, Organization)
     rabl :'organizations/show', format: 'json'
   else
@@ -138,7 +146,7 @@ end
 # Delete an organization.
 #
 # @param <id> the id of the organization to delete
-delete '/organizations/:id' do
+delete '/organizations/:id', check: :valid_token? do
   @organization.destroy
 end
 
@@ -157,7 +165,7 @@ get '/pages/:id' do
 end
 
 # Add a page.
-post '/pages' do
+post '/pages', check: :valid_token? do
   @page = Page.new permit(request.params, Page)
 
   if @page.save
@@ -171,7 +179,7 @@ end
 # Update a page.
 #
 # @param <id> the id of the page to update
-put '/pages/:id' do
+put '/pages/:id', check: :valid_token? do
   if @page.update permit(request.params, Page)
     rabl :'pages/show', format: 'json'
   else
@@ -183,7 +191,7 @@ end
 # Delete a page.
 #
 # @param <id> the id of the page to delete
-delete '/pages/:id' do
+delete '/pages/:id', check: :valid_token? do
   @page.destroy
 end
 
@@ -202,7 +210,7 @@ get '/partners/:id' do
 end
 
 # Add a partner.
-post '/partners' do
+post '/partners', check: :valid_token? do
   @partner = Partner.new permit(request.params, Partner)
 
   if @partner.save
@@ -216,7 +224,7 @@ end
 # Update a partner.
 #
 # @param <id> the id of the partner to update
-put '/partners/:id' do
+put '/partners/:id', check: :valid_token? do
   if @partner.update permit(request.params, Partner)
     rabl :'partners/show', format: 'json'
   else
@@ -228,7 +236,7 @@ end
 # Delete a partner.
 #
 # @param <id> the id of the partner to delete
-delete '/partners/:id' do
+delete '/partners/:id', check: :valid_token? do
   @partner.destroy
 end
 
@@ -237,6 +245,67 @@ end
 get '/sectors' do
   @sectors = Organization.all.map(&:sector)
   @sectors.uniq.to_json
+end
+
+
+# Ask a token.
+post '/token' do
+  @user = User.where(email: request.params.with_indifferent_access[:email], password: Digest::MD5.hexdigest(request.params.with_indifferent_access[:password])).first
+
+  if @user
+    @user.set_token
+
+    if @user.save
+      rabl :'users/show', format: 'json'
+    else
+      error 404
+    end
+  else
+    error 404
+  end
+end
+
+
+# Get an user.
+#
+# @param <id> the id of the user you search for
+get '/users/:id' do
+  rabl :'users/show', format: 'json'
+end
+
+# Add an user.
+post '/users' do
+  @user = User.new permit(request.params, User)
+
+  if @user.password
+    @user.password = Digest::MD5.hexdigest @user.password
+  end
+
+  if @user.save
+    rabl :'users/show', format: 'json'
+  else
+    status 400
+    { message: @user.errors.full_messages }.to_json
+  end
+end
+
+# Update an user.
+#
+# @param <id> the id of the user to update
+put '/users/:id', check: :valid_token? do
+  if @user.update permit(request.params, User)
+    rabl :'users/show', format: 'json'
+  else
+    status 400
+    { message: @user.errors.full_messages }.to_json
+  end
+end
+
+# Delete an user.
+#
+# @param <id> the id of the user to delete
+delete '/users/:id', check: :valid_token? do
+  @user.destroy
 end
 
 
@@ -254,7 +323,7 @@ get '/works/:id' do
 end
 
 # Add a work.
-post '/works' do
+post '/works', check: :valid_token? do
   @work = Work.new permit(request.params, Work)
 
   if @work.save
@@ -268,7 +337,7 @@ end
 # Update a work.
 #
 # @param <id> the id of the work to update
-put '/works/:id' do
+put '/works/:id', check: :valid_token? do
   if @work.update permit(request.params, Work)
     rabl :'works/show', format: 'json'
   else
@@ -280,7 +349,7 @@ end
 # Delete a work.
 #
 # @param <id> the id of the work to delete
-delete '/works/:id' do
+delete '/works/:id', check: :valid_token? do
   @work.destroy
 end
 

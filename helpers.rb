@@ -10,4 +10,8 @@ helpers do
   def permit(params, model)
     params.with_indifferent_access.extract!(*model.column_names.map(&:to_sym))
   end
+
+  def valid_token?
+    User.find_by authentication_token: params[:authentication_token]
+  end
 end
