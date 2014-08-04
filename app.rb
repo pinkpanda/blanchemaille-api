@@ -269,12 +269,12 @@ end
 # Get an user.
 #
 # @param <id> the id of the user you search for
-get '/users/:id' do
+get '/users/:id', check: :valid_token? do
   rabl :'users/show', format: 'json'
 end
 
 # Add an user.
-post '/users' do
+post '/users', check: :valid_token? do
   @user = User.new permit(request.params, User)
 
   if @user.password
