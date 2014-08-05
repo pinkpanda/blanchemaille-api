@@ -32,11 +32,11 @@ set(:check) do |name|
   end
 end
 
-%w(newspaper organization page partner work).map do |model|
+%w(newspaper organization page partner user work).map do |model|
   before "/#{model}s/:id" do
-    if model == 'page'
+    if %w(page user).include? model
       instance_variable_set(:"@#{model}", model.classify.constantize.find_by_id(params[:id]))
-      @page = Page.find_by_slug(params[:id]) if !instance_variable_get(:"@#{model}")
+      @page = Page.find_by_slug(params[:id]) if model == 'page' && !instance_variable_get(:"@#{model}")
     else
       begin
         instance_variable_set(:"@#{model}", model.classify.constantize.friendly.find(params[:id]))
@@ -269,7 +269,7 @@ end
 # Get an user.
 #
 # @param <id> the id of the user you search for
-get '/users/:id', check: :valid_token? do
+get '/users/:id' do
   rabl :'users/show', format: 'json'
 end
 

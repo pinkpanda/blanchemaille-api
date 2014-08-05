@@ -1,2 +1,2 @@
 object @user
-attributes *@user.class.column_names
+attributes *@user.class.column_names - [:password]
