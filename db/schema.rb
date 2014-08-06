@@ -11,7 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140805123804) do
+ActiveRecord::Schema.define(version: 20140806093520) do
+
+  create_table "events", force: true do |t|
+    t.datetime "scheduled_at"
+    t.string   "place"
+    t.string   "slug"
+    t.string   "title"
+    t.text     "content"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "events", ["slug"], name: "index_events_on_slug", unique: true, using: :btree
+
+  create_table "images", force: true do |t|
+    t.string   "attachment"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "newspapers", force: true do |t|
     t.string   "image"
@@ -79,6 +98,9 @@ ActiveRecord::Schema.define(version: 20140805123804) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true, using: :btree
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
 
   create_table "works", force: true do |t|
     t.string   "title"

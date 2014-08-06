@@ -32,9 +32,9 @@ set(:check) do |name|
   end
 end
 
-%w(newspaper organization page partner user work).map do |model|
+%w(event image newspaper organization page partner user work).map do |model|
   before "/#{model}s/:id" do
-    if %w(page user).include? model
+    if %w(image page user).include? model
       instance_variable_set(:"@#{model}", model.classify.constantize.find_by_id(params[:id]))
       @page = Page.find_by_slug(params[:id]) if model == 'page' && !instance_variable_get(:"@#{model}")
     else
@@ -60,6 +60,96 @@ post '/contact', check: :valid_token? do
             subject: request.params[:subject],
             body: request.params[:body]
 end
+
+# Get all events.
+get '/events' do
+  @events = Event.all
+  rabl :'events/index', format: 'json'
+end
+
+# Get an event.
+#
+# @param <id> the id of the event you search for
+get '/events/:id' do
+  rabl :'events/show', format: 'json'
+end
+
+# Add an event.
+post '/events', check: :valid_token? do
+  @event = Event.new permit(request.params, Event)
+
+  if @event.save
+    rabl :'events/show', format: 'json'
+  else
+    status 400
+    { message: @event.errors.full_messages }.to_json
+  end
+end
+
+# Update an event.
+#
+# @param <id> the id of the event to update
+put '/events/:id', check: :valid_token? do
+  if @event.update permit(request.params, Event)
+    rabl :'events/show', format: 'json'
+  else
+    status 400
+    { message: @event.errors.full_messages }.to_json
+  end
+end
+
+# Delete an event.
+#
+# @param <id> the id of the event to delete
+delete '/events/:id', check: :valid_token? do
+  @event.destroy
+end
+
+
+# Get all images.
+get '/images' do
+  @images = Image.all
+  rabl :'images/index', format: 'json'
+end
+
+# Get an image.
+#
+# @param <id> the id of the image you search for
+get '/images/:id' do
+  rabl :'images/show', format: 'json'
+end
+
+# Add an image.
+post '/images', check: :valid_token? do
+  @image = Image.new permit(request.params, Image)
+
+  if @image.save
+    rabl :'images/show', format: 'json'
+  else
+    status 400
+    { message: @image.errors.full_messages }.to_json
+  end
+end
+
+# Update an image.
+#
+# @param <id> the id of the image to update
+put '/images/:id', check: :valid_token? do
+  if @image.update permit(request.params, Image)
+    rabl :'images/show', format: 'json'
+  else
+    status 400
+    { message: @image.errors.full_messages }.to_json
+  end
+end
+
+# Delete an image.
+#
+# @param <id> the id of the image to delete
+delete '/images/:id', check: :valid_token? do
+  @image.destroy
+end
+
 
 # Get all newspapers.
 get '/newspapers' do

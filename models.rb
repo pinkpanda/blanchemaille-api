@@ -1,5 +1,21 @@
 require 'carrierwave/orm/activerecord'
 
+class Event < ActiveRecord::Base
+  extend FriendlyId
+
+  friendly_id :title, use: :slugged
+
+  validates :scheduled_at,
+            presence: true
+
+  validates :title,
+            presence: true
+end
+
+class Image < ActiveRecord::Base
+  mount_uploader :attachment, ImageUploader
+end
+
 class Newspaper < ActiveRecord::Base
   extend FriendlyId
 
