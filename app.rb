@@ -1,4 +1,5 @@
 require 'bundler/setup'
+require 'dotenv'
 require 'sinatra'
 require 'sinatra/reloader'
 require 'sinatra/activerecord'
@@ -14,6 +15,8 @@ require './modules.rb'
 require './helpers.rb'
 require './models.rb'
 
+
+Dotenv.load
 
 Rabl.configure do |config|
   config.include_json_root  = false
@@ -54,11 +57,20 @@ get '/' do
 end
 
 # Send an email.
-post '/contact', check: :valid_token? do
-  Pony.mail to: request.params[:to],
-            from: request.params[:from],
-            subject: request.params[:subject],
-            body: request.params[:body]
+post '/contact' do
+  Pony.mail to: request.params.with_indifferent_access[:to],
+            from: request.params.with_indifferent_access[:from],
+            subject: request.params.with_indifferent_access[:subject],
+            body: request.params.with_indifferent_access[:body],
+            via: :smtp,
+            via_options: {
+              address: ENV['SMTP_ADDRESS'],
+              port: ENV['SMTP_PORT'],
+              domain: ENV['SMTP_DOMAIN'],
+              user_name: ENV['SMTP_USER'],
+              password: ENV['SMTP_PASSWORD'],
+              authentication: :plain
+            }
 end
 
 # Get all events.
@@ -340,7 +352,8 @@ end
 
 # Ask a token.
 post '/token' do
-  @user = User.where(email: request.params.with_indifferent_access[:email], password: Digest::MD5.hexdigest(request.params.with_indifferent_access[:password])).first
+  @user = User.where( email: request.params.with_indifferent_access[:email],
+                      password: Digest::MD5.hexdigest(request.params.with_indifferent_access[:password])).first
 
   if @user
     @user.set_token
