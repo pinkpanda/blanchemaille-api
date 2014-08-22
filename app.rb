@@ -4,6 +4,7 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'sinatra/activerecord'
 require 'sinatra/croon'
+require 'sinatra/cross_origin'
 require 'friendly_id'
 require 'pony'
 require 'multi_json'
@@ -22,6 +23,9 @@ Rabl.configure do |config|
   config.include_json_root  = false
   config.include_child_root = false
 end
+
+configure { enable :cross_origin }
+set :allow_methods, [:get, :post, :put, :delete, :options]
 
 
 before /^(?!\/docs)/ do
@@ -51,6 +55,11 @@ end
   end
 end
 
+# CORS Angular
+options '*' do
+  status 204
+end
+
 # Show docs.
 get '/' do
   redirect '/docs'
@@ -73,6 +82,7 @@ post '/contact' do
             }
 end
 
+
 # Get all events.
 get '/events' do
   @events = Event.all
@@ -91,6 +101,7 @@ post '/events', check: :valid_token? do
   @event = Event.new permit(request.params, Event)
 
   if @event.save
+    status 201
     rabl :'events/show', format: 'json'
   else
     status 400
@@ -136,6 +147,7 @@ post '/images', check: :valid_token? do
   @image = Image.new permit(request.params, Image)
 
   if @image.save
+    status 201
     rabl :'images/show', format: 'json'
   else
     status 400
@@ -181,6 +193,7 @@ post '/newspapers', check: :valid_token? do
   @newspaper = Newspaper.new permit(request.params, Newspaper)
 
   if @newspaper.save
+    status 201
     rabl :'newspapers/show', format: 'json'
   else
     status 400
@@ -226,6 +239,7 @@ post '/organizations', check: :valid_token? do
   @organization = Organization.new permit(request.params, Organization)
 
   if @organization.save
+    status 201
     rabl :'organizations/show', format: 'json'
   else
     status 400
@@ -271,6 +285,7 @@ post '/pages', check: :valid_token? do
   @page = Page.new permit(request.params, Page)
 
   if @page.save
+    status 201
     rabl :'pages/show', format: 'json'
   else
     status 400
@@ -316,6 +331,7 @@ post '/partners', check: :valid_token? do
   @partner = Partner.new permit(request.params, Partner)
 
   if @partner.save
+    status 201
     rabl :'partners/show', format: 'json'
   else
     status 400
@@ -359,6 +375,7 @@ post '/token' do
     @user.set_token
 
     if @user.save
+      status 201
       rabl :'users/show', format: 'json'
     else
       error 404
@@ -385,6 +402,7 @@ post '/users', check: :valid_token? do
   end
 
   if @user.save
+    status 201
     rabl :'users/show', format: 'json'
   else
     status 400
@@ -430,6 +448,7 @@ post '/works', check: :valid_token? do
   @work = Work.new permit(request.params, Work)
 
   if @work.save
+    status 201
     rabl :'works/show', format: 'json'
   else
     status 400

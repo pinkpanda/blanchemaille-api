@@ -82,6 +82,7 @@ GEM
     sinatra-croon (0.2.1)
       haml (~> 3.0.12)
       sinatra (~> 1.0)
+    sinatra-cross_origin (0.3.2)
     sinatra-reloader (1.0)
       sinatra-contrib
     sshkit (1.5.1)
@@ -115,5 +116,6 @@ DEPENDENCIES
   sinatra (= 1.4.5)
   sinatra-activerecord (= 2.0.2)
   sinatra-croon (= 0.2.1)
+  sinatra-cross_origin (= 0.3.2)
   sinatra-reloader (= 1.0)
   unicorn (= 4.8.3)

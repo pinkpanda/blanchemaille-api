@@ -43,7 +43,8 @@ end
 
 class Page < ActiveRecord::Base
   validates :slug,
-          presence: true
+          presence: true,
+          uniqueness: true
 
   validates :title,
             presence: true
