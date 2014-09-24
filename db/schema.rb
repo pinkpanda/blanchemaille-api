@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140806093520) do
+ActiveRecord::Schema.define(version: 20140924185109) do
 
   create_table "events", force: true do |t|
     t.datetime "scheduled_at"
@@ -88,6 +88,16 @@ ActiveRecord::Schema.define(version: 20140806093520) do
   end
 
   add_index "partners", ["slug"], name: "index_partners_on_slug", unique: true, using: :btree
+
+  create_table "reports", force: true do |t|
+    t.string   "file"
+    t.string   "slug"
+    t.string   "title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "reports", ["slug"], name: "index_reports_on_slug", unique: true, using: :btree
 
   create_table "users", force: true do |t|
     t.string   "authentication_token"

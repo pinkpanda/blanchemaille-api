@@ -61,6 +61,20 @@ class Partner < ActiveRecord::Base
             presence: true
 end
 
+class Report < ActiveRecord::Base
+  extend FriendlyId
+
+  friendly_id :title, use: :slugged
+
+  mount_uploader :file, FileUploader
+
+  validates :file,
+            presence: true
+
+  validates :title,
+            presence: true
+end
+
 class User < ActiveRecord::Base
   validates :email,
             presence: true,

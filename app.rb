@@ -39,7 +39,7 @@ set(:check) do |name|
   end
 end
 
-%w(event image newspaper organization page partner user work).map do |model|
+%w(event image newspaper organization page partner report user work).map do |model|
   before "/#{model}s/:id" do
     if %w(image page user).include? model
       instance_variable_set(:"@#{model}", model.classify.constantize.find_by_id(params[:id]))
@@ -356,6 +356,52 @@ end
 # @param <id> the id of the partner to delete
 delete '/partners/:id', check: :valid_token? do
   @partner.destroy
+end
+
+
+# Get all reports.
+get '/reports' do
+  @reports = Report.all
+  rabl :'reports/index', format: 'json'
+end
+
+# Get a report.
+#
+# @param <id> the id of the report you search for
+get '/reports/:id' do
+  rabl :'reports/show', format: 'json'
+end
+
+# Add a report.
+post '/reports', check: :valid_token? do
+  @report = Report.new permit(request.params, Report)
+
+  if @report.save
+    status 201
+    rabl :'reports/show', format: 'json'
+  else
+    status 400
+    { message: @report.errors.full_messages }.to_json
+  end
+end
+
+# Update a report.
+#
+# @param <id> the id of the report to update
+put '/reports/:id', check: :valid_token? do
+  if @report.update permit(request.params, Report)
+    rabl :'reports/show', format: 'json'
+  else
+    status 400
+    { message: @report.errors.full_messages }.to_json
+  end
+end
+
+# Delete a report.
+#
+# @param <id> the id of the report to delete
+delete '/reports/:id', check: :valid_token? do
+  @report.destroy
 end
 
 
