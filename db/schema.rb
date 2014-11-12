@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140924185109) do
+ActiveRecord::Schema.define(version: 20141112080528) do
 
   create_table "events", force: true do |t|
     t.datetime "scheduled_at"
@@ -62,6 +62,7 @@ ActiveRecord::Schema.define(version: 20140924185109) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "slug"
+    t.boolean  "iframe",       default: false
   end
 
   add_index "organizations", ["slug"], name: "index_organizations_on_slug", unique: true, using: :btree
